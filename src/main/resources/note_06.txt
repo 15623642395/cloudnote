@@ -1,0 +1,29 @@
+#笔记转移
+针对cn_note更新cn_notebook_id
+##发送Ajax请求
+-时机:对话框中"确定"按钮的onclick #sure_movenote
+-提交数据:下拉单选中option的笔记本ID、笔记ID
+-提交类型:post
+-请求地址:/note/move.do
+
+##服务器端处理
+/note/move.do
+-->MoveNoteController.execute
+-->NoteService.moveNote
+-->NoteDao.updateBookId
+-->cn_note(更新笔记本id)
+-->返回JSON结果
+
+##Ajax回调处理
+成功:1.关闭对话框;
+     2.移除笔记li,清空笔记编辑区;
+     3.提示转移成功
+
+
+#笔记分享
+cn_share分享笔记表
+针对cn_share表做插入
+
+
+cn_note 100万
+cn_share(10万条分享)

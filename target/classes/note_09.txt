@@ -1,0 +1,152 @@
+#Spring AOP概念
+Aspect Oriented Programming 面向切面编程
+Object Oriented Programming 面向对象编程
+面向切面编程是以面向对象编程为基础。
+面向对象关注的是对象设计；面向切面关注的是切面。
+切面特点：共通性(执行功能相同,时机相同)，
+适合解决共通处理问题,例如事务处理,日志处理,
+异常处理,权限处理等。
+AOP优点：将原有业务中共通的处理逻辑抽离出来,
+进行独立封装,然后通过配置作用到原有传统的业务
+处理方法上。简称：将共通业务和传统业务进行解耦。
+可以避免对大量组件方法做代码级别的修改。
+-切面(Aspect)
+ （要追加什么功能？）
+ 在共通时机执行的共通功能。封装了共通处理
+-切入点(Pointcut)
+ （对哪些组件切入？）
+ 指定目标组件及其方法,将来执行时调用切面的共通处理
+ Spring是通过一系列表达式指定切入目标.
+=======方法限定表达式========
+execution(修饰符? 返回类型 方法名(参数) 抛出异常?) 
+//匹配所有以load开头的方法
+execution(* load*(..))
+//匹配org.service包下所有类的load开头的方法
+execution(* org.service.*.load*(..))
+//匹配org.service包下所有类所有方法
+execution(* org.service.*.*(..))
+//匹配org.service包及其子包下所有类所有方法
+execution(* org.service..*.*(..))
+=======类型限定表达式========
+within(类型)
+//匹配UserService所有方法
+within(org.service.UserService)
+within(org.service.*)
+//匹配org.service包及其子包下所有类所有方法
+within(org.service..*)
+========bean名称限定表达式=======
+bean(id名)
+//匹配id=userService组件的所有方法
+bean("userService")
+//匹配所有id以Service结尾的所有方法
+bean("*Service")
+
+-通知(Advice)
+ （什么位置切入？）
+ 指定切面和目标组件方法执行的时机。
+ Spring提供了5种基本通知类型。
+ 前置通知：在目标方法前调用切面处理
+ 后置通知：在目标方法后调用切面处理（没异常才执行）
+ 异常通知：在目标方法抛出异常后调用切面处理
+ 最终通知：在目标方法后调用切面处理（有无异常都执行）
+ 环绕通知：在目标方法前和后都可以执行切面处理
+
+try
+ 使用前置通知切入
+ ==目标组件方法==
+ 使用后置通知切入
+}catch(){
+ 使用异常通知切入
+}finally{
+ 使用最终通知切入
+}
+
+#Spring AOP使用方法
+功能：为每个Controller的execute方法追加打桩信息
+##注解配置方式使用
+-开启组件扫描
+<context:component-scan 
+  base-package="org.tedu.cloudnote.aspect"/>
+-开启AOP注解标记
+  <aop:aspectj-autoproxy />
+-使用@Aspect,@Pointcut,@Before等标记
+
+##XML配置方式使用
+-方面：打桩信息System.out.println("-----");
+-切入点：within(org.tedu.cloudnote.controller..*)
+-通知：在execute原有方法逻辑之前,前置通知配置
+
+#Spring AOP案例（异常处理）
+
+项目异常处理：如果系统发生异常，将异常信息记录到文件。
+
+实现方案：采用Spring AOP方式,对Controller一层组件
+进行切入。
+-方面：捕获异常对象,将异常信息写入文件
+-切入点：所有Controller
+-通知：异常通知
+
+#Spring AOP实现原理
+AutoProxy 动态代理
+Spring AOP是采用动态代理技术实现的。
+动态代理技术：可以根据现有一个组件，动态生成一个新组件。
+Spring 如果为某个目标组件切入了AOP功能后,Spring容器
+会采用动态代理技术生成一个新组件对象返回。并且在新组件
+中将原有组件的业务方法进行了重写，在重写方法里实现了
+切面组件功能和原目标组件功能的合并。
+Controller-->
+动态代理类（重写UserService方法,
+调用DataSourceTransactionManager
+和UserServiceImpl方法处理）
+-->UserServiceImpl(AOP切入事务)
+
+Spring动态代理技术采用下面两种方法：
+-Proxy（Java JDK API）
+ 目标组件存在接口
+ public class 代理类 implements 原目标组件接口{
+   //重写目标方法
+ }
+
+-CGLIB（第三方技术）
+ 目标组件不存在接口
+ public class 代理类 extends 原目标类{
+   //重写目标方法
+ }
+
+<aop:aspectj-autoproxy proxy-target-class="true"/>
+<aop:config proxy-target-class="true">
+<tx:annotation-driven proxy-target-class="true"/>
+
+B-->A.execute
+B-->代理类对象.execute
+//强制指定采用CGLIB方法生成代理类
+public class 代理类 extends A{
+  //重写execute方法
+}
+//组件接口不含有主业务方法时,必须强制采用CGLIB方式
+public class A implements Serializable{
+  public String exeucte(){
+       //逻辑处理
+  }
+}
+
+
+
+请求-->A.f1-->B.f2-->C.f3-->响应
+
+ThreadLocal-->本地线程保护，存一个值的容器
+ThreadLocal.set(值);//存值
+ThreadLocal.get();//取值
+
+TheadLocal本质是一个Map结构
+Key      Value
+线程号    值
+
+
+
+#实现笔记收藏功能
+主要逻辑：提取分享笔记信息，向cn_note表插入操作
+使用cn_note_type_id区分自己创建的笔记，还是收藏的笔记
+
+
+

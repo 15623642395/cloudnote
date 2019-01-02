@@ -1,0 +1,110 @@
+#项目描述
+##需求简介
+笔记管理系统,用于记录学习笔记信息。
+主要功能：用户管理、笔记本管理、笔记管理、
+笔记分享和收藏管理、回收站管理、活动管理等。
+##开发环境
+工具:MyEclipse
+JDK:JDK1.6
+TOMCAT:Tomcat7.0
+数据库:MySQL5.5
+##技术方案
+Ajax,jQuery,fckeditor,Spring(MVC,IOC,AOP),
+MyBatis/iBatis,dbcp
+Ajax:异步请求响应,页面局部刷新
+jQuery:简化js和ajax编程
+Spring:MVC负责接收请求分发给Service组件处理,
+       然后生成JSON响应。
+       IOC负责管理Controller,Service,Dao组件,
+       以注入方式建立关联
+       AOP负责事务管理切入;异常日志处理的切入
+MyBatis:简化数据操作,实现Dao组件
+dbcp:连接池,管理底层connection链接。
+
+##个人负责哪些工作
+  根据自己情况写
+##项目感受
+收获、遇到了哪些问题、怎么解决
+
+#项目环境构建
+##数据库环境
+show databases;//显示库列表
+use 库名;//使用某个库
+show tables;//查看当前库中表
+desc 表名;//查看表结构
+create database 库名;//创建一个库
+建表,增、删、改、查都和Oracle语法一致
+set names utf8;//设置mysql客户端编码
+source sql命令文件;//导入执行sql命令文件
+
+source /home/soft01/cloud_note.sql;
+
+##程序环境
+##src
+org.[tedu].cloudnote.controller
+org.tedu.cloudnote.controller.user
+org.tedu.cloudnote.controller.book
+org.tedu.cloudnote.controller.note
+org.tedu.cloudnote.service
+org.tedu.cloudnote.dao
+org.tedu.cloudnote.entity
+org.tedu.cloudnote.util
+org.tedu.cloudnote.sql
+spring-mvc.xml
+spring-mybatis.xml
+##WebRoot
+html文件
+css文件
+image文件
+script文件
+##WebRoot/WEB-INF/lib（21个）
+spring(mvc,ioc,aop,jackson)
+mybatis
+mybatis-spring.jar
+dbcp
+mysql驱动
+#登录功能实现
+##发送Ajax请求
+-时机：登录按钮的onlick
+-提交数据：用户名和密码/格式检查
+-请求类型：post
+-请求地址：/user/login.do
+
+##服务器处理
+/user/login.do
+-->DispatcherServlet
+-->HanlderMapping
+-->UserLoginController.execute
+-->UserService.checkLogin
+-->UserDao-->cn_user(查询)
+-->返回JSON结果
+
+{
+status:处理状态,//0成功;其他表示失败
+msg:消息,
+data:返回的数据
+}
+
+##Ajax回调函数
+解析JSON结果
+成功:进入主界面edit.html
+失败:在log_in.html给出提示信息
+系统错误:alert("登录失败")
+
+http://localhost:8088/cloudnote
+/user/login.do?name=demo&password=111
+
+if(user==null){
+
+}else{
+  if(password){
+
+  }else{
+
+  }
+}
+
+
+
+
+

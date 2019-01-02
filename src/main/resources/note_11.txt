@@ -1,0 +1,46 @@
+#MyBatis关联映射
+
+cn_note-->Note
+cn_notebook-->Book
+cn_notebook+cn_note-->利用关联映射
+利用关联映射将关联表查询的记录封装成
+具有对象关联的实体
+
+/note/load.do?id=xxx
+-->NoteManagerController.showNote
+-->NoteService.loadNoteContent
+-->NoteDao.xxx/UserDao.xxx
+-->返回JSON结果
+
+
+Mybatis关联映射有以下两种:
+-单个对象关联
+Note(1)-->User(1)从Note找User
+采用<resultMap>和<association>描述
+-多个对象关联
+User(1)-->Book(n)从User找Book
+采用<resultMap>和<collection>
+
+User-->Book
+Book-->Note
+
+
+SQL
+note-->SQL加载User
+note-->SQL加载User
+note-->SQL加载User
+note-->SQL加载User
+note-->SQL加载User
+
+List<Note>
+
+
+#插入数据库后，如何获取数据库生成的主键值
+con.createStatement(xxx);
+statement.executeUpdate(sql);
+ResultSet rs = statement.getGeneratorKeys();
+
+insert into t_emp (id,name) 
+values (emp_seq.nextval,#{name}) 
+
+

@@ -1,0 +1,47 @@
+#分享笔记搜索
+##发送Ajax请求
+-时机:在搜索框中点击回车键
+-提交数据：搜索关键字
+-提交类型:post
+-提交地址:/note/search.do
+##服务器端处理
+/note/search.do
+-->SearchShareNoteController.execute
+-->NoteService.searchShareNote
+-->ShareDao.findLikeTitle
+-->cn_share（模糊搜索title）
+##Ajax回调处理
+成功：解析搜索的Share结果,生成li列表
+     搜索笔记列表显示,其他列表隐藏
+
+
+全部笔记列表 pc_part_2
+回收站笔记列表 pc_part_4
+搜索笔记列表 pc_part_6
+收藏笔记列表 pc_part_7
+参加活动的笔记列表 pc_part_8
+编辑笔记 pc_part_3
+预览笔记 pc_part_5
+
+#分享笔记预览
+##发送Ajax请求
+-时机:搜索列表li单击onclick
+-提交数据:笔记ID
+-提交类型:post
+-提交地址:/note/view.do
+##服务器端处理
+/note/view.do
+-->ViewShareNoteController.execute
+-->NoteService.viewShareNote
+-->ShareDao.findByNoteId-->cn_share
+-->返回JSON结果
+
+##Ajax回调处理
+成功:解析返回的JSON结果,显示到预览区
+   pc_part_5显示;pc_part_3隐藏
+失败:加载笔记信息失败
+
+
+
+
+

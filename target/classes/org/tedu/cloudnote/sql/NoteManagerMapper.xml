@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.tedu.cloudnote.dao.NoteManagerDao">
+<!-- 采用一个join查询一次性加载两个表数据 -->
+<select id="findNoteAndUser" 
+	parameterType="string"
+	resultMap="noteMap">
+select * from cn_note n 
+	join cn_user u on(n.cn_user_id=u.cn_user_id)
+where n.cn_note_id=#{noteId}	
+</select>
+
+<resultMap id="noteMap" 
+	type="org.tedu.cloudnote.entity.Note">
+	<id property="cn_note_id" column="cn_note_id"/>
+	<result property="cn_notebook_id" column="cn_notebook_id"/>
+	<result property="cn_user_id" column="cn_user_id"/>
+	<result property="cn_note_status_id" column="cn_note_status_id"/>
+	<result property="cn_note_type_id" column="cn_note_type_id"/>
+	<result property="cn_note_title" column="cn_note_title"/>
+	<result property="cn_note_body" column="cn_note_body"/>
+	<result property="cn_note_create_time" column="cn_note_create_time"/>
+	<result property="cn_note_last_modify_time" column="cn_note_last_modify_time"/>
+	<!-- user关联属性加载 -->
+	<association property="user" 
+		javaType="org.tedu.cloudnote.entity.User">
+		<id property="cn_user_id" column="cn_user_id"/>
+		<result property="cn_user_name" column="cn_user_name"/>
+		<result property="cn_user_password" column="cn_user_password"/>
+		<result property="cn_user_token" column="cn_user_token"/>
+		<result property="cn_user_nick" column="cn_user_nick"/>
+	</association>
+</resultMap>
+	
+<!-- 先采用一个SQL查询Note;再发送一个SQL查询相关的User -->
+<select id="findNoteAndUser1" 
+	parameterType="string"
+	resultMap="noteMap1">
+select * from cn_note
+where cn_note_id=#{noteId}
+</select>
+
+<resultMap id="noteMap1" 
+	type="org.tedu.cloudnote.entity.Note">
+	<!-- 省略相同字段和属性的数据装载 -->
+	<association property="user"
+		javaType="org.tedu.cloudnote.entity.User"
+		select="findUser" column="cn_user_id">
+	</association>
+</resultMap>
+
+<select id="findUser" parameterType="string"
+	resultType="org.tedu.cloudnote.entity.User">
+select * from cn_user 
+where cn_user_id=#{userId}
+</select>
+
+<!-- 查询所有笔记 -->
+<!-- 标题 日期 作者 -->
+<select id="findAllNoteAndUser" 
+	resultMap="noteMap">
+select * from cn_note n 
+	join cn_user u on(n.cn_user_id=u.cn_user_id)
+</select>
+
+<!-- User加载相关的Book信息 -->
+<select id="findUserAndBooks" 
+	parameterType="string"
+	resultMap="userMap">
+select * from cn_user u 
+	join cn_notebook b 
+	on(u.cn_user_id=b.cn_user_id)
+where u.cn_user_id=#{userId} 
+</select>
+
+<resultMap id="userMap" 
+	type="org.tedu.cloudnote.entity.User">
+	<id property="cn_user_id" column="cn_user_id"/>
+	<result property="cn_user_name" column="cn_user_name"/>
+	<result property="cn_user_password" column="cn_user_password"/>
+	<result property="cn_user_token" column="cn_user_token"/>
+	<result property="cn_user_nick" column="cn_user_nick"/>
+	<!-- books集合属性的加载 -->
+	<collection property="books" 
+		javaType="java.util.List"
+		ofType="org.tedu.cloudnote.entity.Book">
+		<id property="cn_notebook_id" column="cn_notebook_id"/>
+		<result property="cn_user_id" column="cn_user_id"/>
+		<result property="cn_notebook_type_id" column="cn_notebook_type_id"/>
+		<result property="cn_notebook_name" column="cn_notebook_name"/>
+		<result property="cn_notebook_desc" column="cn_notebook_desc"/>
+		<result property="cn_notebook_createtime" column="cn_notebook_createtime"/>
+	</collection>
+</resultMap>
+
+<!-- 先查询user对象,然后再发送一个SQL加载books -->
+<select id="findUserAndBooks1" 
+parameterType="string" resultMap="userMap1">
+select * from cn_user
+where cn_user_id=#{userId}
+</select>
+<resultMap id="userMap1" 
+type="org.tedu.cloudnote.entity.User">
+	<!-- 省略了名称对应的装在 -->
+	<collection property="books" 
+		javaType="java.util.List"
+		ofType="org.tedu.cloudnote.entity.Book"
+		select="findBooks" column="cn_user_id">
+	</collection>
+</resultMap>
+<select id="findBooks" parameterType="string"
+	resultType="org.tedu.cloudnote.entity.Book">
+select * from cn_notebook
+where cn_user_id=#{userId}
+</select>
+
+</mapper>
+

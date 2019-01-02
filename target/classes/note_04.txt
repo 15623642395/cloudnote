@@ -1,0 +1,45 @@
+#保存笔记
+##发送Ajax请求
+-时机："保存笔记"按钮onclick
+-提交数据：笔记标题，内容，ID
+-提交类型：post
+-请求地址：/note/update.do
+##服务器端处理
+/note/update.do
+-->UpdateNoteController.execute
+-->NoteService.updateNote
+-->NoteDao.update
+-->cn_note(更新)
+-->返回JSON结果
+##Ajax回调处理
+成功：提示保存笔记成功
+     标题改变同步li的标题
+失败：提示保存笔记失败
+
+#创建笔记本
+##发送Ajax请求
+-时机:对话框"创建"按钮onclick,使用$("#sure_addbook")
+-提交数据:笔记本名称，用户ID
+-提交类型:post
+-提交请求:/book/add.do
+
+##服务器端处理
+/book/add.do
+-->AddBookController.execute
+-->BookService.addBook
+-->BookDao.save
+-->cn_notebook(插入)
+-->返回JSON结果
+
+##Ajax回调处理
+成功：1.关闭对话框;
+      2.追加一个笔记本li;
+      3.提示创建成功
+失败：提示创建笔记本失败
+
+
+
+
+
+
+

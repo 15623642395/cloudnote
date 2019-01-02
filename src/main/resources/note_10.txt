@@ -1,0 +1,89 @@
+#MyBatis动态SQL
+可以在SQL定义的XML文件中，根据parameterType
+传入的参数动态构建出一个SQL语句。
+MyBatis提供了一套标签,可以在XML中构建分支和循环
+逻辑。使用与JSP中的JSTL相似。
+<if test="条件">
+xxxx
+</if>
+<choose>
+  <when test="条件1">xxx</c:when>
+  <when test="条件2">xxx</c:when>
+  <otherwise>xxx</c:otherwise>
+</choose>
+<foreach collection="集合" item="变量">
+</foreach>
+
+##**实现组合查询**
+##实现动态更新
+##实现批量删除
+
+标题:
+状态:
+开始日期:
+结束日期:
+
+select * from cn_note where cn_note_title like ?
+select * from cn_note where cn_note_status_id=?
+select * from cn_note
+where cn_note_title like ? and cn_note_status_id=?
+
+/note/manager.do
+-->NoteManagerController.execute
+-->NoteService.loadManagerNote
+-->NoteDao.findNotes-->cn_note
+-->返回JSON结果
+
+<where>标记：1.生成一个where关键字;
+  2.过滤条件最前面多余的and或or关键字
+
+
+JSP
+session.setAttribute("user",User对象)
+
+${session.user.userName}
+
+public class User{
+
+  private String name;//成员变量名为name
+  //属性名userName
+  public String getUserName(){
+    return xxx;
+  }
+
+  public String setUserName(String name){
+    this.name = name;
+  }
+
+}
+
+101;102;103
+
+update cn_note
+set cn_notebook_id=#{cn_notebook_id}
+where cn_note_id=#{cn_note_id}
+
+update cn_note
+set cn_note_status_id='2'
+where cn_note_id=#{id}
+
+update cn_note
+set cn_note_title=#{cn_note_title},
+  cn_note_body=#{cn_note_body},
+  cn_note_last_modify_time=#{cn_note_last_modify_time}
+where cn_note_id=#{cn_note_id}
+
+update cn_note
+set
+cn_notebook_id=#{cn_notebook_id},
+cn_note_status_id=#{status},
+cn_note_title=#{cn_note_title},
+cn_note_body=#{cn_note_body},
+cn_note_last_modify_time=#{cn_note_last_modify_time}
+where cn_note_id=#{cn_note_id}
+
+
+delete from cn_note
+where cn_note_id in (1,2,3,4)
+
+

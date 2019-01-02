@@ -1,0 +1,56 @@
+#注册功能
+##发送Ajax请求
+-时机：注册按钮onclick
+-提交数据：用户名、昵称、密码
+-提交方式：post
+-请求地址：/user/regist.do
+
+##服务器端处理
+/user/regist.do
+-->DispatcherServlet
+-->HanlderMapping
+-->UserRegistController.execute
+-->UserService.registUser
+-->UserDao.save-->cn_user(插入)
+-->返回JSON结果
+
+##Ajax回调处理
+成功:切换到登录界面
+失败:给出提示信息
+异常:alert("注册失败");
+
+
+#笔记本列表显示
+##发送Ajax请求
+-时机:onload
+-提交数据:用户ID(cookie)
+-提交类型:post
+-请求地址:/book/loadbooks.do
+##服务器端处理
+/book/loadbooks.do
+-->DispatcherServlet
+-->HanlderMapping
+-->LoadUserBooksController.execute
+-->BookService.loadUserBooks
+-->BookDao.findByUserId-->cn_notebook(查询)
+-->返回JSON结果
+
+##Ajax回调处理
+解析出笔记本信息,生成笔记本列表
+<li class="online">
+  <a  class='checked'>
+    <i class="fa fa-book" title="online" rel="tooltip-bottom"></i>
+    默认笔记本
+  </a>
+</li>
+
+
+
+
+
+
+
+
+
+
+

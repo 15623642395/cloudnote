@@ -1,0 +1,43 @@
+#Spring事务管理
+-数据库：commit提交;rollback撤销;
+-JDBC：stat.executeUpdate();默认自动commit提交
+ try{
+  con.setAutoCommit(false);//关闭自动提交
+  stat.executeUpdate(sql1);
+  stat.executeUpdate(sql2);
+  con.commit();//提交
+ }catch(){
+  con.rollback();//撤销
+ }
+事务：将一组和SQL有关的操作,封装成一个整体
+-MyBatis:
+ 封装了JDBC使用,SqlSession.commit();
+-Spring+JDBC/Spring+MyBatis
+ 默认自动commit;默认一个操作就是一个独立事务。
+ 如果需要封装一组操作，可以采用下面方法
+
+##***Spring事务管理(声明式事务管理：注解配置)
+特点：简单、方便，不需要修改原有业务逻辑代码。
+使用方法：
+分析：*.do-->Controller-->Service(使用事务)-->Dao-->db操作
+-在Spring容器声明一个bean(DataSourceTransactionManager)
+-开启事务注解标记@Transactional
+-在Service方法前或类前添加@Transactional标记即可
+try{
+ con.setAutoCommit(false);
+ //调用指定的目标方法//调用service方法
+ con.commit();
+}catch(){
+ con.rollback();
+}
+
+##**Spring事务管理(声明式事务管理：XML配置)
+特点：基于AOP配置,XML配置比注解复杂,侵入性低
+使用方法：
+-在Spring配置一个<bean> (DataSourceTransactionManager)
+-定义<tx:advice>，指定事务作用在哪些方法上
+-定义<aop:config>，指定事务作用在哪些组件上
+
+##Spring事务管理(编程式事务管理：基于Java)
+##Spring事务属性控制
+
